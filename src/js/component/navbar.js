@@ -6,13 +6,9 @@ import { Context } from "../store/appContext";
 export const Navbar = () => {
 	const { store, actions } = useContext(Context);
 
-	function handleDeleteItem() {
-		actions.addToFavorites();
-	}
-
 	return (
-		<nav className="navbar navbar-light bg-dark mb-0 d-flex justify-content-around p-4">
-			<div className="container w-50 d-flex justify-content-between">
+		<nav className="navbar navbar-light bg-dark mb-0 d-flex justify-content-around p-3">
+			<div className="container w-50 d-flex justify-content-between ps-4 pe-4">
 				<Link to="/">
 					<img
 						className=""

@@ -4,47 +4,45 @@ import { Context } from "../store/appContext";
 import ModalIndividual from "./modal-individual";
 import { Link, useLocation } from "react-router-dom";
 
-export default function Planets({ planetName, planetUid }) {
-	const URL_PLANETS = "planets";
-	const URL_CHARACTERS = "people";
+export default function IndividualCard({ itemName, itemUid, path }) {
 	const { store, actions, setStore } = useContext(Context);
-	const [planetData, setPlanetData] = useState(null);
+	const [itemData, setItemData] = useState(null);
+
 	const [apiLoaded, setApiLoaded] = useState(false);
 
-	// MODAL
+	// Modal (sin uso)
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
 	// Favorite
 	const isFavorite = store.arrFavorites.some(
-		(favorite) =>
-			favorite.uid === planetUid && favorite.path_url === URL_PLANETS
+		(favorite) => favorite.uid === itemUid && favorite.path_url === path
 	);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					`https://www.swapi.tech/api/planets/${planetUid}`
+					`https://www.swapi.tech/api/${path}/${itemUid}`
 				);
 				if (!response.ok) {
 					throw new Error("La respuesta de la red no fue exitosa");
 				}
 				const data = await response.json();
 				console.log("Data de cada planeta cargada", data);
-				setPlanetData(data);
+				setItemData(data);
 				setApiLoaded(true);
 			} catch (error) {
-				console.error("No se pudo cargar planetData", error);
+				console.error("No se pudo cargar itemData", error);
 			}
 		};
 
 		fetchData();
 	}, []);
 
-	function handleFavorite(planet, planetUid, URL_PLANETS) {
-		actions.addToFavorites(planet, planetUid, URL_PLANETS);
+	function handleFavorite(planet, itemUid, path) {
+		actions.addToFavorites(planet, itemUid, path);
 	}
 
 	return (
@@ -52,31 +50,48 @@ export default function Planets({ planetName, planetUid }) {
 			<div className="card m-2 " style={{ width: "14rem" }}>
 				<img
 					className="card-img-top mt-3"
-					src={`https://starwars-visualguide.com/assets/img/${URL_PLANETS}/${
-						planetUid === "1" ? 8 : planetUid
-					}.jpg`}></img>
+					src={`https://starwars-visualguide.com/assets/img/${
+						path === "people" ? "characters" : path
+					}/${itemUid === "1" ? 8 : itemUid}.jpg`}></img>
+
 				<div className="card-body mb-0">
-					<h5 className="card-title text-white">{planetName}</h5>
+					<h5 className="card-title text-white">{itemName}</h5>
 
 					{apiLoaded && (
 						<>
-							<p className="card-text p-0 m-0">
-								<b>Population:</b>{" "}
-								{planetData.result.properties.population}
-							</p>
-							<p className="card-text p-0 m-0">
-								<b>Terrain:</b>{" "}
-								{planetData.result.properties.terrain}
-							</p>
+							{path === "planets" ? (
+								<>
+									<p className="card-text p-0 m-0">
+										<b>Population:</b>{" "}
+										{itemData.result.properties.population}
+									</p>
+									<p className="card-text p-0 m-0">
+										<b>Terrain:</b>{" "}
+										{itemData.result.properties.terrain}
+									</p>
+								</>
+							) : (
+								<>
+									<p className="card-text p-0 m-0">
+										<b>Height:</b>{" "}
+										{itemData.result.properties.height}
+									</p>
+									<p className="card-text p-0 m-0">
+										<b>Birth Year:</b>{" "}
+										{itemData.result.properties.birth_year}
+									</p>
+								</>
+							)}
 						</>
 					)}
+
 					{!apiLoaded && <div className="loader-detail"></div>}
 				</div>
 				<div className="d-flex justify-content-between mb-3">
 					{apiLoaded && (
 						<Link
 							to={{
-								pathname: `/planets/${planetUid}`,
+								pathname: `/${path}/${itemUid}`,
 							}}
 							className="btn btn-secondary "
 							style={{ textDecoration: "none" }}>
@@ -86,7 +101,7 @@ export default function Planets({ planetName, planetUid }) {
 
 					<button
 						onClick={() => {
-							handleFavorite(planetName, planetUid, URL_PLANETS);
+							handleFavorite(itemName, itemUid, path);
 						}}
 						type="button"
 						className="btn p-0">

@@ -20,33 +20,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			oneItemView: [],
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			},
-
-			// PROYECTO RAUL
-			loadInitialApi: async (firstSlug) => {
-				console.log("Cargando planetas...");
+			loadInitialApi: async (path) => {
+				console.log(`Cargando ${path}...`);
 
 				try {
 					const response = await fetch(
-						`https://www.swapi.tech/api/${firstSlug}/`
+						`https://www.swapi.tech/api/${path}/`
 					);
 					if (!response.ok) {
 						throw new Error(
@@ -55,19 +34,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const data = await response.json();
 					console.log(
-						"Datos de los planetas cargados exitosamente:",
+						`Datos de los ${path} cargados exitosamente:`,
 						data
 					);
-					setStore({ arrPlanets: data });
+					if (path === "planets") setStore({ arrPlanets: data });
+					if (path === "people") setStore({ arrCharacters: data });
+					// if (path === "vehicles") setStore({ arrVehicles: data });
 				} catch (error) {
 					console.error(
-						"Se produjo un error al cargar los datos de los planetas:",
+						`Se produjo un error al cargar los datos de los ${path}: `,
 						error
 					);
 				}
 			},
 			loadPlanetDetail: async (planetUid) => {
-				const store = getStore();
 				try {
 					const response = await fetch(
 						`https://www.swapi.tech/api/planets/${planetUid}`
@@ -86,8 +66,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			loadItemOnClick: async (pathId) => {
-				const store = getStore();
-
 				try {
 					const response = await fetch(
 						`https://www.swapi.tech/api${pathId}`
@@ -139,11 +117,3 @@ const getState = ({ getStore, getActions, setStore }) => {
 };
 
 export default getState;
-
-// TASK:
-// Mantener el fa-solid fa-heart cuando se vuelve atras
-// Añadir los favoritos a la lista de favoritos de la navbar
-
-// Other fetchs, people...
-
-//Añadir las imagenes
