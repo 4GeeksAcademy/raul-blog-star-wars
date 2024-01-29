@@ -45,7 +45,9 @@ export default function ItemIndividual() {
 						<div className="col-md-6">
 							<img
 								className="mt-3"
-								src={`https://starwars-visualguide.com/assets/img/${path}/${lastCharachterUid}.jpg`}></img>
+								src={`https://starwars-visualguide.com/assets/img/${
+									path === "people" ? "characters" : path
+								}/${lastCharachterUid}.jpg`}></img>
 						</div>
 						<div className="col-md-6">
 							{apiLoaded && (

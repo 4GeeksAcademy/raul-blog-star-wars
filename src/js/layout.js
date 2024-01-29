@@ -32,6 +32,11 @@ const Layout = () => {
 								element={<ItemIndividual />}
 							/>
 
+							<Route
+								path="/people/:theid"
+								element={<ItemIndividual />}
+							/>
+
 							<Route path="*" element={<h1>Not found!</h1>} />
 						</Routes>
 						<Footer />
