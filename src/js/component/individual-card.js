@@ -52,7 +52,12 @@ export default function IndividualCard({ itemName, itemUid, path }) {
 					className="card-img-top mt-3"
 					src={`https://starwars-visualguide.com/assets/img/${
 						path === "people" ? "characters" : path
-					}/${itemUid === "1" ? 8 : itemUid}.jpg`}></img>
+					}/${itemUid}.jpg`}
+					onError={(e) => {
+						e.target.onerror = null; // Evita un bucle infinito si la imagen de respaldo también falla
+						e.target.src =
+							"https://starwars-visualguide.com/assets/img/planets/8.jpg";
+					}}></img>
 
 				<div className="card-body mb-0">
 					<h5 className="card-title text-white">{itemName}</h5>

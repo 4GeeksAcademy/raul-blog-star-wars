@@ -43,11 +43,21 @@ export default function ItemIndividual() {
 				<>
 					<div className="row d-flex justify-content-between">
 						<div className="col-md-6">
+							{/* 
+							<img> Esto es porque la imagen 1 de Tatooine (Te pone otra) esta rota,
+							El problema es que tambien afecta a characters
+							*/}
 							<img
 								className="mt-3"
 								src={`https://starwars-visualguide.com/assets/img/${
 									path === "people" ? "characters" : path
-								}/${lastCharachterUid}.jpg`}></img>
+								}/${lastCharachterUid}.jpg`}
+								onError={(e) => {
+									e.target.onerror = null; // Evita un bucle infinito si la imagen de respaldo también falla
+									e.target.src =
+										"https://starwars-visualguide.com/assets/img/planets/8.jpg";
+								}}
+							/>
 						</div>
 						<div className="col-md-6">
 							{apiLoaded && (
